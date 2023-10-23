@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func main() {
+func Day2() {
 	txtStrategy, err := os.ReadFile("strategy_guide.txt")
 	if err != nil {
 		panic(err)
