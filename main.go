@@ -6,6 +6,8 @@ import (
 )
 
 func main() {
+	println("------------- Jour 1 -------------")
 	day1.Day1()
+	println("------------- Jour 2 -------------")
 	day2.Day2()
 }
