@@ -18,17 +18,22 @@ func Day2() {
 
 	strategyGuide := strings.Split(string(txtStrategy), "\n")
 	score := 0
+	scorePart2 := 0
 	for _, line := range strategyGuide {
 		if line == "" {
 			continue
 		}
 		s := strings.Split(line, " ")
-		player1 := getType(s[0])
-		player2 := getType(s[1])
+		player1 := GetType(s[0])
+		player2 := GetType(s[1])
 		score += getWinner(player1, player2) + player2.Number()
+		// Part 2
+		newPlayer2 := GetMoves(player1, s[1])
+		scorePart2 += getWinner(player1, newPlayer2) + newPlayer2.Number()
 	}
 
 	println("Mon score : ", score)
+	println("Mon score part 2 : ", scorePart2)
 }
 
 func getWinner(player1, player2 TypeOfPlay) int {

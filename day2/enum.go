@@ -8,7 +8,7 @@ const (
 	SCISSORS TypeOfPlay = "Scissors"
 )
 
-func getType(s string) TypeOfPlay {
+func GetType(s string) TypeOfPlay {
 	switch s {
 	case "A":
 		return ROCK
@@ -41,5 +41,44 @@ func (t TypeOfPlay) Number() int {
 		return 3
 	default:
 		return 0
+	}
+}
+
+func LoosingType(typeOfPlay TypeOfPlay) TypeOfPlay {
+	switch typeOfPlay {
+	case ROCK:
+		return SCISSORS
+	case PAPER:
+		return ROCK
+	case SCISSORS:
+		return PAPER
+	default:
+		return ""
+	}
+}
+
+func WinningType(typeToPlay TypeOfPlay) TypeOfPlay {
+	switch typeToPlay {
+	case ROCK:
+		return PAPER
+	case PAPER:
+		return SCISSORS
+	case SCISSORS:
+		return ROCK
+	default:
+		return ""
+	}
+}
+
+func GetMoves(player1 TypeOfPlay, strategy string) TypeOfPlay {
+	switch strategy {
+	case "X":
+		return LoosingType(player1)
+	case "Z":
+		return WinningType(player1)
+	case "Y":
+		return player1
+	default:
+		return ""
 	}
 }
