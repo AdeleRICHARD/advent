@@ -3,7 +3,7 @@ package util
 import "os"
 
 func ReadFile(name string) []byte {
-	txtRead, err := os.ReadFile("day2/strategy_guide.txt")
+	txtRead, err := os.ReadFile(name)
 	if err != nil {
 		panic(err)
 	}
