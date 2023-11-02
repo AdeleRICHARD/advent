@@ -24,7 +24,8 @@ func Day3() {
 	rucksacks := strings.Split(string(txtRucksack), "\n")
 
 	commonElemPrioritySum := 0
-
+	commonElemPrioritySumPart2 := 0
+	commonThreeElements := make([]string, 0, 3)
 	for _, rucksack := range rucksacks {
 		// Split the rucksack in two compartments
 		compartment1, compartment2 := rucksack[:len(rucksack)/2], rucksack[len(rucksack)/2:]
@@ -33,19 +34,21 @@ func Day3() {
 		itemsMap1, itemsMap2 := fromSliceToMap(strings.Split(compartment1, "")), fromSliceToMap(strings.Split(compartment2, ""))
 
 		// Compare the two maps and find the common item
-		commonElement := compareMaps(itemsMap1, itemsMap2)
-		if commonElement != "" {
-			// Convert the common item to its priority and add to the total
-			elementPriority := int(commonElement[0])
-			if commonElement >= "a" && commonElement <= "z" {
-				commonElemPrioritySum += elementPriority - int('a') + 1
-			} else {
-				commonElemPrioritySum += elementPriority - int('A') + 27
-			}
+		commonElement := compareMapsOneByOne(itemsMap1, itemsMap2)
+		commonThreeElements = append(commonThreeElements, rucksack)
+		if len(commonThreeElements) == 3 {
+			// Compare the three maps and find the common item
+			commonElement = compareMapsThreeByThree(commonThreeElements)
+			commonElemPrioritySumPart2 += calculatePriority(commonElement)
+			commonThreeElements = make([]string, 0, 3)
 		}
+
+		commonElemPrioritySum += calculatePriority(commonElement)
+
 	}
 
 	fmt.Println(commonElemPrioritySum)
+	fmt.Println("Total of 3 by 3 : ", commonElemPrioritySumPart2)
 }
 
 func fromSliceToMap(slice []string) map[string]struct{} {
@@ -56,11 +59,37 @@ func fromSliceToMap(slice []string) map[string]struct{} {
 	return itemsMap
 }
 
-func compareMaps(map1, map2 map[string]struct{}) string {
+func compareMapsOneByOne(map1, map2 map[string]struct{}) string {
 	for item := range map1 {
 		if _, ok := map2[item]; ok {
 			return item
 		}
 	}
 	return ""
+}
+
+func compareMapsThreeByThree(threeItems []string) string {
+	item1, item2, item3 := fromSliceToMap(strings.Split(threeItems[0], "")), fromSliceToMap(strings.Split(threeItems[1], "")), fromSliceToMap(strings.Split(threeItems[2], ""))
+
+	for item := range item1 {
+		if _, ok := item2[item]; ok {
+			if _, ok := item3[item]; ok {
+				return item
+			}
+		}
+	}
+	return ""
+}
+
+func calculatePriority(commonElement string) int {
+	if commonElement != "" {
+		// Convert the common item to its priority and add to the total
+		elementPriority := int(commonElement[0])
+		if commonElement >= "a" && commonElement <= "z" {
+			return elementPriority - int('a') + 1
+		} else {
+			return elementPriority - int('A') + 27
+		}
+	}
+	return 0
 }
