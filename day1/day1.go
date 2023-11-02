@@ -1,10 +1,11 @@
 package day1
 
 import (
-	"os"
 	"slices"
 	"strconv"
 	"strings"
+
+	"main.go/util"
 )
 
 func Day1() {
@@ -12,11 +13,7 @@ func Day1() {
 	// For each values, calculate the calories
 	// Add to a table the number of calories for each void in the file
 	// Print the number of calories for the most calories
-	txtCalories, err := os.ReadFile("day1/calories.txt")
-	if err != nil {
-		panic(err)
-	}
-
+	txtCalories := util.ReadFile("day1/calories.txt")
 	caloriesToCount := strings.Split(string(txtCalories), "\n")
 	calories := make([]int, len(caloriesToCount))
 	index := 0
