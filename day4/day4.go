@@ -11,13 +11,20 @@ func Day4() {
 	txtAssignment := util.ReadFile("day4/assignments.txt")
 	assignments := strings.Split(string(txtAssignment), "\n")
 	countContainAllShifts := 0
+	countOverlapping := 0
 	for _, assignment := range assignments {
 		pair1, pair2 := strings.Split(assignment, ",")[0], strings.Split(assignment, ",")[1]
 		if contains(pair1, pair2) || contains(pair2, pair1) {
 			countContainAllShifts++
+			countOverlapping++
+			continue
+		}
+		if isOverlapping(pair1, pair2) {
+			countOverlapping++
 		}
 	}
 	println("Shifts contained in other shifts : ", countContainAllShifts)
+	println("Shifts overlapping with other shifts : ", countOverlapping)
 }
 
 func parseRange(r string) (int, int) {
@@ -34,4 +41,10 @@ func contains(pair1, pair2 string) bool {
 	start1, end1 := parseRange(pair1)
 	start2, end2 := parseRange(pair2)
 	return start1 <= start2 && end1 >= end2
+}
+
+func isOverlapping(pair1, pair2 string) bool {
+	start1, end1 := parseRange(pair1)
+	start2, end2 := parseRange(pair2)
+	return start1 <= start2 && end1 >= start2 || start1 <= end2 && end1 >= end2
 }
