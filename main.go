@@ -4,6 +4,7 @@ import (
 	"main.go/day1"
 	"main.go/day2"
 	"main.go/day3"
+	"main.go/day4"
 )
 
 func main() {
@@ -13,4 +14,6 @@ func main() {
 	day2.Day2()
 	println("------------- Jour 3 -------------")
 	day3.Day3()
+	println("------------- Jour 4 -------------")
+	day4.Day4()
 }
