@@ -40,7 +40,8 @@ func Day3() {
 			// Compare the three maps and find the common item
 			commonElement = compareMapsThreeByThree(commonThreeElements)
 			commonElemPrioritySumPart2 += calculatePriority(commonElement)
-			commonThreeElements = make([]string, 0, 3)
+			// Reset map
+			commonThreeElements = commonThreeElements[:]
 		}
 
 		commonElemPrioritySum += calculatePriority(commonElement)

@@ -10,8 +10,10 @@ import (
 func Day4() {
 	txtAssignment := util.ReadFile("day4/assignments.txt")
 	assignments := strings.Split(string(txtAssignment), "\n")
+
 	countContainAllShifts := 0
 	countOverlapping := 0
+
 	for _, assignment := range assignments {
 		pair1, pair2 := strings.Split(assignment, ",")[0], strings.Split(assignment, ",")[1]
 		if contains(pair1, pair2) || contains(pair2, pair1) {
