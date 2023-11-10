@@ -19,10 +19,7 @@ func Day5() {
 	for _, move := range moves {
 		moveCrate := buildMoveObject(move)
 		// Move the crate
-		/*
-			Then, the rearrangement procedure is given. In each step of the procedure, a quantity of crates is moved from one stack to a different stack. In the first step of the above rearrangement procedure, one crate is moved from stack 2 to stack 1
-		*/
-		// Get the crate from the stack
+
 		start := stacks[moveCrate.From]
 		end := stacks[moveCrate.To]
 		start, end = moveCrates(moveCrate, start, end)
@@ -112,15 +109,22 @@ func getLastCrateByColumn(stacks map[int][]string) map[int]string {
 }
 
 func moveCrates(moveToDo model.Move, start, end []string) ([]string, []string) {
+	cratePart2 := make([]string, 0)
 	if len(start) < moveToDo.NbMove {
 		moveToDo.NbMove = len(start)
 	}
 	for i := 0; i < moveToDo.NbMove; i++ {
-		crate := start[i] // Get the top crate from the stack
-		// Add at start of the stack
-		end = append([]string{crate}, end...) // Add the crate to the new stack
+		// Get the top crate from the stack
+		// Part2
+		cratePart2 = append(cratePart2, start[i])
+		// Part1
+		// crate := start[i]
+		// end = append(crate, end...) // Add the crate to the new stack
 	}
-	start = start[moveToDo.NbMove:] // Remove the crates from the stack
+	//Part2
+	end = append(cratePart2, end...) // Add the crate to the new stack
+	start = start[moveToDo.NbMove:]  // Remove the crates from the stack
 
+	//JSDHQMZGF
 	return start, end
 }
