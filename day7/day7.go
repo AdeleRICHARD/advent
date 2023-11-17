@@ -1,7 +1,9 @@
 package day7
 
 import (
+	"fmt"
 	"slices"
+	"strconv"
 	"strings"
 
 	"main.go/util"
@@ -21,25 +23,25 @@ func Day7() {
 	systTxt := util.ReadFile("day7/system.txt")
 	systList := strings.Split(string(systTxt), "\n")
 
-	system := System{Dir: []Directory{}}
+	system := System{Dir: []*Directory{}}
 
 	for _, line := range systList {
 		command := strings.Split(line, " ")
+		if command[0] != "$" {
+			system.addToCurrentDirectory(command)
+			continue
+		}
 
 		if strings.Contains(line, "cd") {
 			system.changeDirectory(command)
-		} else if strings.Contains(line, "ls") {
-			// TODO
-		} else if strings.Contains(line, "dir") {
-			// TODO
-		} else {
-			// TODO
 		}
 	}
+
+	fmt.Printf("%+v\n", system)
 }
 
 type System struct {
-	Dir []Directory
+	Dir []*Directory
 }
 
 type Directory struct {
@@ -57,10 +59,16 @@ type File struct {
 func (syst *System) changeDirectory(command []string) {
 	switch {
 	case slices.Contains(command, "/"):
-		// TODO
+		syst.Dir = []*Directory{
+			{
+				Name:     "/",
+				Parent:   nil,
+				Children: []*string{},
+				Files:    []*File{},
+			},
+		}
 	case slices.Contains(command, ".."):
 		syst.toParentDirectory()
-
 	default:
 		// TODO
 	}
@@ -73,5 +81,18 @@ func (syst *System) toParentDirectory() {
 			// Actual is now the parent directory
 			syst.Dir[len(syst.Dir)-1] = syst.Dir[i]
 		}
+	}
+}
+
+func (syst *System) addToCurrentDirectory(command []string) {
+	actualDirectory := syst.Dir[len(syst.Dir)-1]
+	if slices.Contains(command, "dir") {
+		actualDirectory.Children = append(actualDirectory.Children, &command[1])
+	} else {
+		size, err := strconv.Atoi(command[0])
+		if err != nil {
+			panic(err)
+		}
+		actualDirectory.Files = append(actualDirectory.Files, &File{Name: command[1], Size: size})
 	}
 }
