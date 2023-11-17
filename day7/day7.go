@@ -1,7 +1,6 @@
 package day7
 
 import (
-	"fmt"
 	"slices"
 	"strconv"
 	"strings"
@@ -37,7 +36,6 @@ func Day7() {
 		}
 	}
 
-	fmt.Printf("%+v\n", system)
 }
 
 type System struct {
@@ -70,7 +68,7 @@ func (syst *System) changeDirectory(command []string) {
 	case slices.Contains(command, ".."):
 		syst.toParentDirectory()
 	default:
-		// TODO
+		syst.toChildDirectory(command[len(command)-1])
 	}
 }
 
@@ -94,5 +92,19 @@ func (syst *System) addToCurrentDirectory(command []string) {
 			panic(err)
 		}
 		actualDirectory.Files = append(actualDirectory.Files, &File{Name: command[1], Size: size})
+	}
+}
+
+func (syst *System) toChildDirectory(name string) {
+	actualDirectory := syst.Dir[len(syst.Dir)-1]
+	for _, directory := range actualDirectory.Children {
+		if *directory == name {
+			syst.Dir = append(syst.Dir, &Directory{
+				Name:     name,
+				Parent:   actualDirectory,
+				Children: []*string{},
+				Files:    []*File{},
+			})
+		}
 	}
 }
