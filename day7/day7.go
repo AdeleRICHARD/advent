@@ -1,12 +1,17 @@
 package day7
 
 import (
+	"fmt"
 	"slices"
 	"strconv"
 	"strings"
 
 	"main.go/util"
 )
+
+var totalSizeDirectories int
+
+const minimumSizeRequired = 100000
 
 func Day7() {
 	/*
@@ -26,16 +31,21 @@ func Day7() {
 
 	for _, line := range systList {
 		command := strings.Split(line, " ")
-		if command[0] != "$" {
-			system.addToCurrentDirectory(command)
+		fmt.Printf("Command: %s\n", command)
+		if strings.Contains(line, "cd") {
+			system.changeDirectory(command)
 			continue
 		}
 
-		if strings.Contains(line, "cd") {
-			system.changeDirectory(command)
+		if command[0] != "$" {
+			system.addToCurrentDirectory(command)
+		}
+		if system.Dir[len(system.Dir)-1].TotalSize >= minimumSizeRequired {
+			totalSizeDirectories += system.Dir[len(system.Dir)-1].TotalSize
+			println(system.Dir[len(system.Dir)-1].TotalSize, " TOTAL : ", totalSizeDirectories)
 		}
 	}
-
+	println(totalSizeDirectories)
 }
 
 type System struct {
@@ -43,10 +53,11 @@ type System struct {
 }
 
 type Directory struct {
-	Name     string
-	Parent   *Directory
-	Children []*string
-	Files    []*File
+	Name      string
+	Parent    *Directory
+	Children  []*string
+	Files     []*File
+	TotalSize int
 }
 
 type File struct {
@@ -75,9 +86,14 @@ func (syst *System) changeDirectory(command []string) {
 func (syst *System) toParentDirectory() {
 	actualDirectory := syst.Dir[len(syst.Dir)-1]
 	for i, directory := range syst.Dir {
+		if actualDirectory.Name == "/" {
+			syst.Dir = syst.Dir[:1]
+			break
+		}
 		if directory.Name == actualDirectory.Parent.Name {
 			// Actual is now the parent directory
-			syst.Dir[len(syst.Dir)-1] = syst.Dir[i]
+			syst.Dir = syst.Dir[:i+1]
+			break
 		}
 	}
 }
@@ -91,6 +107,7 @@ func (syst *System) addToCurrentDirectory(command []string) {
 		if err != nil {
 			panic(err)
 		}
+		actualDirectory.TotalSize += size
 		actualDirectory.Files = append(actualDirectory.Files, &File{Name: command[1], Size: size})
 	}
 }
