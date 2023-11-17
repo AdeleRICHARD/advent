@@ -12,8 +12,6 @@ func Day6() {
 	// Split the text by newline to get each row
 	communications := strings.Split(string(communication), "\n")
 	differentLetters := []string{}
-	/* 	var previousLetter string
-	 */
 	for _, line := range communications {
 		for i, letter := range strings.Split(line, "") {
 			if slices.Contains(differentLetters, letter) {
@@ -23,7 +21,7 @@ func Day6() {
 			differentLetters = append(differentLetters, letter)
 			// part 1
 			/*
-				if len(differentLetters) == 14 {
+				if len(differentLetters) == 4 {
 					println(i + 1)
 					break
 				}
