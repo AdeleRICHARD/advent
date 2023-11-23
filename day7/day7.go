@@ -49,15 +49,28 @@ func Day7() {
 	}
 
 	totalSize := uint64(0)
+	// Taille demandée
+	// Taille minimum requise - (taille totale du disque - taille totale de chaque dossier)
+	minRequired := uint64(30000000)
+	spaceMinimumNeeded := minRequired - (70000000 - directories[0].Size)
 	for _, dir := range directories {
 		if dir.Size <= 100000 {
 			totalSize += dir.Size
 		}
+		// Cherche l'espace suplémentaire nécessaire à supprimer
+		// Doit être plus grand ou égal à l'espace nécessaire
+		// Mais on veut le plus petit des fichiers à supprimer
+		if dir.Size >= spaceMinimumNeeded && dir.Size < minRequired {
+			minRequired = dir.Size
+		}
+
 	}
 
 	fmt.Println("Total size of directories <= 100000: ", totalSize)
+	fmt.Println("Minimum size required: ", minRequired)
 }
 
+// uint64 meilleur pour calculer des gros nombres
 type Directory struct {
 	Path   string
 	Size   uint64
