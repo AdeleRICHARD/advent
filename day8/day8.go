@@ -29,10 +29,8 @@ func Day8() {
 			}
 			// Check top
 			currentTree := treesHeights[i][j]
-			if checkTopAndBottom(treesHeights[:i], currentTree, j) &&
-				checkTopAndBottom(treesHeights[i:], currentTree, j) &&
-				checkAdjacentTrees(treesHeights[i][:j], currentTree) &&
-				checkAdjacentTrees(treesHeights[i][j:len(treesHeights[i])], currentTree) {
+			if checkTopAndBottom(treesHeights, currentTree, i, j) &&
+				checkAdjacentTrees(treesHeights[i], currentTree) {
 
 				countVisibleTrees++
 			}
@@ -42,20 +40,18 @@ func Day8() {
 	println("VISIBLE TREES : ", countVisibleTrees)
 }
 
-func checkTopAndBottom(trees [][]int, currentTree, colNb int) bool {
-	max := 0
+func checkTopAndBottom(trees [][]int, currentTree, rowNb, colNb int) bool {
 	for i := range trees {
-		if trees[i][colNb] > max {
-			max = trees[i][colNb]
+		nb := trees[i][colNb]
+		if nb > currentTree && i != rowNb {
+			return false
 		}
+
 	}
-	if currentTree > max {
-		println(true)
-	}
-	return currentTree > max
+	return true
 }
 
 func checkAdjacentTrees(adjacentTrees []int, currentTree int) bool {
-	max := slices.Max(adjacentTrees)
-	return currentTree == max
+
+	return currentTree > slices.Max(adjacentTrees)
 }
