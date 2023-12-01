@@ -24,7 +24,7 @@ func Day7() {
 		fmt.Printf("Command: %s\n", command)
 
 		if command[0] == "$" {
-			if command[1] != "ls" {
+			if command[1] == "cd" {
 				switch command[2] {
 				case "/":
 					continue

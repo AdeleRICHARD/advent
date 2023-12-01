@@ -212,3 +212,52 @@ func Test_checkTop(t *testing.T) {
 		})
 	}
 }
+
+func Test_countTopTrees(t *testing.T) {
+	topTree := trees[:1]
+	topTrees := trees[:2]
+	type args struct {
+		trees       [][]int
+		colNb       int
+		currentTree int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{
+			name: "count top trees all visibles",
+			args: args{
+				trees:       topTree,
+				colNb:       2,
+				currentTree: 5,
+			},
+			want: 1,
+		},
+		{
+			name: "count top trees not all visible",
+			args: args{
+				trees:       topTree,
+				colNb:       2,
+				currentTree: 3,
+			},
+			want: 0,
+		},
+		{
+			name: "count top trees visibles",
+			args: args{
+				trees:       topTrees,
+				colNb:       2,
+				currentTree: 5,
+			},
+			want: 2,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := countTopTrees(tt.args.trees, tt.args.colNb, tt.args.currentTree)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
