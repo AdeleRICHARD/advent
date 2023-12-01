@@ -28,4 +28,6 @@ func main() {
 	day7.Day7()
 	println("------------- Jour 8 -------------")
 	day8.Day8()
+	println("------------- Jour 9 -------------")
+	// day9.Day9()
 }
