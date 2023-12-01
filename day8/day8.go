@@ -1,57 +1,80 @@
 package day8
 
 import (
-	"slices"
 	"strings"
 
 	"main.go/util"
 )
 
 func Day8() {
-	trees := strings.Split(string(util.ReadFile("day8/trees.txt")), "\n")
+	treeTxt := strings.Split(string(util.ReadFile("day8/trees.txt")), "\n")
 	// Transform tree into an double array of int
 	treesHeights := [][]int{}
-	for _, tree := range trees {
+	for _, tree := range treeTxt {
 		treeRows, _ := util.ConvertStringsToInts(strings.Split(tree, ""))
 		treesHeights = append(treesHeights, treeRows)
 	}
 	countVisibleTrees := 0
-	for i := 0; i < len(treesHeights); i++ {
-		if i == 0 || i == len(treesHeights)-1 {
-			countVisibleTrees += len(treesHeights[i])
+
+	for row, trees := range treesHeights {
+		if row == 0 || row == len(treesHeights)-1 {
+			countVisibleTrees += len(trees)
 			continue
 		}
-		for j := 0; j < len(treesHeights[i]); j++ {
+		for col, tree := range trees {
 			// Visible trees on the edges
-			if j == 0 || j == len(treesHeights[i])-1 {
+			if col == 0 || col == len(trees)-1 {
 				countVisibleTrees++
 				continue
 			}
 			// Check top
-			currentTree := treesHeights[i][j]
-			if checkTopAndBottom(treesHeights, currentTree, i, j) &&
-				checkAdjacentTrees(treesHeights[i], currentTree) {
-
+			if checkTop(treesHeights[:row], col, tree) ||
+				checkBottom(treesHeights[row+1:], col, tree) ||
+				checkLeft(trees[:col], row, col, tree) ||
+				checkRight(trees[col+1:], row, col, tree) {
 				countVisibleTrees++
 			}
-
 		}
 	}
+
 	println("VISIBLE TREES : ", countVisibleTrees)
 }
 
-func checkTopAndBottom(trees [][]int, currentTree, rowNb, colNb int) bool {
-	for i := range trees {
-		nb := trees[i][colNb]
-		if nb > currentTree && i != rowNb {
+func checkTop(trees [][]int, colNb, currentTree int) bool {
+	// Check top
+	for _, treeRow := range trees {
+		if treeRow[colNb] >= currentTree {
 			return false
 		}
-
 	}
 	return true
 }
 
-func checkAdjacentTrees(adjacentTrees []int, currentTree int) bool {
+func checkBottom(trees [][]int, colNb, currentTree int) bool {
+	// Check bottom
+	for _, treeRow := range trees {
+		if treeRow[colNb] >= currentTree {
+			return false
+		}
+	}
+	return true
+}
+func checkLeft(trees []int, rowNb, colNb, currentTree int) bool {
+	// Check left
+	for _, tree := range trees {
+		if tree >= currentTree {
+			return false
+		}
+	}
+	return true
+}
 
-	return currentTree > slices.Max(adjacentTrees)
+func checkRight(trees []int, rowNb, colNb, currentTree int) bool {
+	// Check right
+	for _, tree := range trees {
+		if tree >= currentTree {
+			return false
+		}
+	}
+	return true
 }
