@@ -56,10 +56,10 @@ func Test_moveRight(t *testing.T) {
 				nbMove: 2,
 			},
 			wantRope: [][]string{
-				{"#", "#", "T", "H"},
+				{"#", "#", "#", "T", "H"},
 			},
-			wantHead: []int{0, 3},
-			wantTail: []int{0, 2},
+			wantHead: []int{0, 4},
+			wantTail: []int{0, 3},
 		},
 	}
 	for _, tt := range tests {
@@ -108,6 +108,51 @@ func Test_moveUp(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			gotRope, gotHead, gotTail := moveUp(tt.args.rope, tt.args.head, tt.args.tail, tt.args.nbMove)
+			assert.Equal(t, tt.want, gotRope)
+			assert.Equal(t, tt.want1, gotHead)
+			assert.Equal(t, tt.want2, gotTail)
+		})
+	}
+}
+
+func Test_moveLeft(t *testing.T) {
+	type args struct {
+		rope   [][]string
+		head   []int
+		tail   []int
+		nbMove int
+	}
+	tests := []struct {
+		name  string
+		args  args
+		want  [][]string
+		want1 []int
+		want2 []int
+	}{
+		{
+			name: "Move left",
+			args: args{
+				rope: [][]string{
+					{"#", "#", "#", ""},
+					{"", "", "", "T"},
+					{"", "", "", "H"},
+				},
+				head:   []int{2, 3},
+				tail:   []int{1, 3},
+				nbMove: 2,
+			},
+			want: [][]string{
+				{"#", "#", "#", ""},
+				{"", "", "", "#"},
+				{"", "H", "T", ""},
+			},
+			want1: []int{2, 1},
+			want2: []int{2, 2},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotRope, gotHead, gotTail := moveLeft(tt.args.rope, tt.args.head, tt.args.tail, tt.args.nbMove)
 			assert.Equal(t, tt.want, gotRope)
 			assert.Equal(t, tt.want1, gotHead)
 			assert.Equal(t, tt.want2, gotTail)

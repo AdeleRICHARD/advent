@@ -164,7 +164,42 @@ func moveUp(rope [][]string, head, tail []int, nbMove int) ([][]string, []int, [
 }
 
 func moveLeft(rope [][]string, head, tail []int, nbMove int) ([][]string, []int, []int) {
-	//TODO
+	// indexes
+	rowHead := head[0]
+	rowTail := tail[0]
+
+	colTail := tail[1]
+	colHead := head[1]
+
+	// Move left
+	rope[rowHead][colHead] = "" // Where H was, put a #
+	head[1] -= nbMove
+	if head[1] < 0 {
+		head[1] *= -1
+	}
+	colHead = head[1]
+
+	if len(rope[rowHead]) < nbMove {
+		for i := 0; i < nbMove; i++ {
+			slices.Insert(rope[rowHead], 0, "#")
+		}
+		// Add new columns
+		rope[rowHead][colHead] = "H"
+	} else {
+		// Move head to the next column
+		rope[rowHead][colHead] = "H"
+	}
+
+	if !isTouchingHead(head, tail) {
+		// Where T was, put a #
+		rope[rowTail][colTail] = "#"
+		// Move tail to the right
+		colTail = colHead + 1
+		// Put tail up to date
+		tail[0], tail[1] = rowHead, colTail
+		rope[rowHead][colTail] = "T"
+	}
+
 	return rope, head, tail
 }
 
