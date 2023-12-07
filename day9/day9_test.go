@@ -149,6 +149,22 @@ func Test_moveLeft(t *testing.T) {
 			want1: []int{2, 1},
 			want2: []int{2, 2},
 		},
+		{
+			name: "Move left at start of rope",
+			args: args{
+				rope: [][]string{
+					{"H"},
+				},
+				head:   []int{0, 0},
+				tail:   []int{0, 0},
+				nbMove: 2,
+			},
+			want: [][]string{
+				{"H", "T", "#"},
+			},
+			want1: []int{0, 0},
+			want2: []int{0, 1},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

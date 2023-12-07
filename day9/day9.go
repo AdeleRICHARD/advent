@@ -173,19 +173,20 @@ func moveLeft(rope [][]string, head, tail []int, nbMove int) ([][]string, []int,
 
 	// Move left
 	rope[rowHead][colHead] = "" // Where H was, put a #
-	head[1] -= nbMove
-	if head[1] < 0 {
-		head[1] *= -1
-	}
-	colHead = head[1]
 
 	if len(rope[rowHead]) < nbMove {
 		for i := 0; i < nbMove; i++ {
-			slices.Insert(rope[rowHead], 0, "#")
+			rope[rowHead] = slices.Insert(rope[rowHead], 0, "#")
 		}
+
 		// Add new columns
 		rope[rowHead][colHead] = "H"
+		head[1] = slices.Index(rope[rowHead], "H")
+		tail[1] = nbMove
+		colTail = tail[1]
 	} else {
+		colHead -= nbMove
+		head[1] = colHead
 		// Move head to the next column
 		rope[rowHead][colHead] = "H"
 	}
