@@ -60,21 +60,6 @@ func fromListToMoves(list []string) []Move {
 	return moves
 }
 
-/* func GetHeightOfTable(moves []Move) [][]string {
-
-	totalUp := 0
-	totalRight := 0
-	for _, move := range moves {
-		switch move.Step {
-		case "U":
-			totalUp += move.Quantity
-		case "R":
-			totalRight += move.Quantity
-		}
-	}
-	return make([][]string, totalUp)
-} */
-
 func isTouchingHead(head, tail []int) bool {
 	//Diagonal
 	if head[0] == tail[0]+1 && head[1] == tail[1]+1 {
@@ -119,8 +104,10 @@ func moveRight(rope [][]string, head, tail []int, nbMove int) ([][]string, []int
 	if !isTouchingHead(head, tail) {
 		// Where T was, put a #
 		rope[rowTail][colTail] = "#"
-		for i := 0; i < nbMove; i++ {
-			rope[rowHead][colTail+i] = "#"
+		if rowHead == rowTail {
+			for i := 0; i < nbMove; i++ {
+				rope[rowHead][colTail+i] = "#"
+			}
 		}
 		// Move tail to the right
 		colTail = colHead - 1
@@ -215,7 +202,43 @@ func moveLeft(rope [][]string, head, tail []int, nbMove int) ([][]string, []int,
 }
 
 func moveDown(rope [][]string, head, tail []int, nbMove int) ([][]string, []int, []int) {
-	//TODO
+	// indexes
+	rowHead := head[0]
+	rowTail := tail[0]
+
+	colTail := tail[1]
+	colHead := head[1]
+
+	// Move head down
+	rope[rowHead][colHead] = "" // Where H was, nothing
+
+	if len(rope) < nbMove {
+		for i := 0; i < nbMove; i++ {
+			rope = slices.Insert(rope, 0, make([]string, colHead+1))
+		}
+		// Add new columns
+		rope[rowHead][colHead] = "H"
+		head[1] = slices.Index(rope[rowHead], "H")
+		tail[1] = nbMove
+		colTail = tail[1]
+	} else {
+		// Move head to the next column
+		rope[rowHead-nbMove][colHead] = "H"
+		rowHead -= nbMove
+		head[0] = rowHead
+	}
+
+	if !isTouchingHead(head, tail) {
+		// Where T was, put a #
+		rope[rowTail][colTail] = "#"
+		// Move tail under head
+		rowTail = rowHead + 1
+		colTail = colHead
+		// Put tail up to date
+		tail[0] = rowTail
+		tail[1] = colTail
+		rope[rowTail][colTail] = "T"
+	}
 
 	return rope, head, tail
 }
