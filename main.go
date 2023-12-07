@@ -9,6 +9,7 @@ import (
 	"main.go/day6"
 	"main.go/day7"
 	"main.go/day8"
+	"main.go/day9"
 )
 
 func main() {
@@ -29,5 +30,5 @@ func main() {
 	println("------------- Jour 8 -------------")
 	day8.Day8()
 	println("------------- Jour 9 -------------")
-	// day9.Day9()
+	day9.Day9()
 }
