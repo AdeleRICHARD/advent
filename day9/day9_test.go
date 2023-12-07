@@ -61,6 +61,42 @@ func Test_moveRight(t *testing.T) {
 			wantHead: []int{0, 4},
 			wantTail: []int{0, 3},
 		},
+		{
+			name: "Move right after left",
+			args: args{
+				rope: [][]string{
+					{"#", "#", "H", "T", ""},
+				},
+				head:   []int{0, 2},
+				tail:   []int{0, 3},
+				nbMove: 2,
+			},
+			wantRope: [][]string{
+				{"#", "#", "", "T", "H"},
+			},
+			wantHead: []int{0, 4},
+			wantTail: []int{0, 3},
+		},
+		{
+			name: "Move right after up",
+			args: args{
+				rope: [][]string{
+					{"#", "#", "#", ""},
+					{"", "", "", "T"},
+					{"", "", "", "H"},
+				},
+				head:   []int{2, 3},
+				tail:   []int{1, 3},
+				nbMove: 2,
+			},
+			wantRope: [][]string{
+				{"#", "#", "#", ""},
+				{"", "", "", "#"},
+				{"", "", "", "#", "T", "H"},
+			},
+			wantHead: []int{2, 5},
+			wantTail: []int{2, 4},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

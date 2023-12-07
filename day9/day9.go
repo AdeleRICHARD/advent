@@ -17,6 +17,8 @@ func Day9() {
 	head := []int{0, 0}
 	tail := []int{0, 0}
 
+	nbTailPassed := 0
+
 	for _, move := range moves {
 		// If nothing in the rope, means that H,T and s are all at the same place
 		// See only head
@@ -25,6 +27,7 @@ func Day9() {
 		case "R":
 			// Move right
 			rope, head, tail = moveRight(rope, head, tail, move.Quantity)
+
 		case "U":
 			// Move up
 			rope, head, tail = moveUp(rope, head, tail, move.Quantity)
@@ -33,6 +36,10 @@ func Day9() {
 			rope, head, tail = moveLeft(rope, head, tail, -move.Quantity)
 		case "D":
 			rope, head, tail = moveDown(rope, head, tail, -move.Quantity)
+		}
+
+		if countTailPassed(rope) > nbTailPassed {
+			nbTailPassed = countTailPassed(rope)
 		}
 	}
 
@@ -93,7 +100,7 @@ func moveRight(rope [][]string, head, tail []int, nbMove int) ([][]string, []int
 	colHead := head[1]
 	// Move head to the right
 
-	rope[rowTail][colHead] = "#" // Where H was, put a #
+	rope[rowHead][colHead] = "" // Where H was, put a #
 	head[1] += nbMove
 	colHead = head[1]
 
@@ -112,11 +119,14 @@ func moveRight(rope [][]string, head, tail []int, nbMove int) ([][]string, []int
 	if !isTouchingHead(head, tail) {
 		// Where T was, put a #
 		rope[rowTail][colTail] = "#"
+		for i := 0; i < nbMove; i++ {
+			rope[rowHead][colTail+i] = "#"
+		}
 		// Move tail to the right
 		colTail = colHead - 1
 		// Put tail up to date
-		tail[1] = colTail
-		rope[rowTail][colTail] = "T"
+		tail[0], tail[1] = rowHead, colTail
+		rope[rowHead][colTail] = "T"
 	}
 
 	return rope, head, tail
@@ -206,5 +216,18 @@ func moveLeft(rope [][]string, head, tail []int, nbMove int) ([][]string, []int,
 
 func moveDown(rope [][]string, head, tail []int, nbMove int) ([][]string, []int, []int) {
 	//TODO
+
 	return rope, head, tail
+}
+
+func countTailPassed(rope [][]string) int {
+	pass := 0
+	for _, row := range rope {
+		for _, col := range row {
+			if col == "#" {
+				pass++
+			}
+		}
+	}
+	return pass
 }
