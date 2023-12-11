@@ -30,5 +30,6 @@ func main() {
 	println("------------- Jour 8 -------------")
 	day8.Day8()
 	println("------------- Jour 9 -------------")
-	day9.Day9()
+	day9.Day9Revamp()
+
 }

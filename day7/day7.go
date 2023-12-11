@@ -21,8 +21,6 @@ func Day7() {
 		command := strings.Fields(line)
 		// Print actualDirectories
 
-		fmt.Printf("Command: %s\n", command)
-
 		if command[0] == "$" {
 			if command[1] == "cd" {
 				switch command[2] {
