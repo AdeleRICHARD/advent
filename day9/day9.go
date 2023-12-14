@@ -1,91 +1,92 @@
 package day9
 
 import (
-	"fmt"
-	"os"
 	"strconv"
 	"strings"
-
-	"main.go/util"
 )
 
-func Day9() {
+// First try but not working
+// Too complicated
+/*
+	 func Day9() {
 
-	// Vérifier pour la taille du tableau
-	// Part1()
-	ropeMouves := util.ReadFile("day9/rope.txt")
-	moves := fromListToMoves(strings.Split(string(ropeMouves), "\n"))
+		// Vérifier pour la taille du tableau
+		// Part1()
+		ropeMouves := util.ReadFile("day9/rope.txt")
+		moves := fromListToMoves(strings.Split(string(ropeMouves), "\n"))
 
-	gridHeight, gridWidth, startPosX, _ := calculateExtremes(moves)
-	rope := make([][]string, gridHeight)
-	for i := 0; i < gridHeight; i++ {
-		rope[i] = make([]string, gridWidth)
+		gridHeight, gridWidth, startPosX, _ := calculateExtremes(moves)
+		rope := make([][]string, gridHeight)
+		for i := 0; i < gridHeight; i++ {
+			rope[i] = make([]string, gridWidth)
+		}
+		head := []int{135, startPosX}
+		knots := map[string][]int{
+			"1": {135, startPosX},
+			"2": {135, startPosX},
+			"3": {135, startPosX},
+			"4": {135, startPosX},
+			"5": {135, startPosX},
+			"6": {135, startPosX},
+			"7": {135, startPosX},
+			"8": {135, startPosX},
+			"9": {135, startPosX},
+		}
+		tail := []int{135, startPosX}
+
+		nbTailPassed := 0
+		tailsPassed := make(map[string]int)
+		rope[head[0]][head[1]] = "H"
+
+		tailCount := 0
+		for i, move := range moves {
+			// If nothing in the rope, means that H,T and s are all at the same place
+			// See only head
+			if i == 168 {
+				println("i: ", i)
+			}
+			switch move.Step {
+			case "R":
+				// Move right
+				rope, head, tail = moveRight(rope, head, knots, move.Quantity, &tailCount)
+			case "U":
+				// Move up
+				rope, head, tail = moveUp(rope, head, knots, move.Quantity, &tailCount)
+			case "L":
+				// Move left
+				rope, head, tail = moveLeft(rope, head, knots, move.Quantity, &tailCount)
+			case "D":
+				rope, head, tail = moveDown(rope, head, knots, move.Quantity, &tailCount)
+			}
+			if i == 0 {
+				rope[tail[0]][tail[1]] = "T"
+			}
+			// If tail is already in the map do not count it
+
+			if countTailPassed(rope) > nbTailPassed {
+				nbTailPassed = countTailPassed(rope)
+			}
+
+			if _, ok := tailsPassed[fmt.Sprintf("%v", tail)]; !ok {
+				tailsPassed[fmt.Sprintf("%v", tail)] = 1
+			}
+			//printInFile(rope)
+		}
+		println("tailCount: ", tailCount)
+		fmt.Printf("head: %v\n", head)
+		fmt.Printf("tail: %v\n", tail)
+		fmt.Printf("Nb tail passed %v: ", nbTailPassed)
+
+		fmt.Printf("tails passed: %v\n", len(tailsPassed))
+		// 1988 too low
+		// 5041 too low
+		// 5165 too low
+		// 5174 not good
+		// 7324 not good
 	}
-	head := []int{135, startPosX}
-	tail := []int{135, startPosX}
+*/
 
-	nbTailPassed := 0
-	tailsPassed := make(map[string]int)
-	rope[head[0]][head[1]] = "H"
-
-	tailCount := 0
-	for i, move := range moves {
-		// If nothing in the rope, means that H,T and s are all at the same place
-		// See only head
-		/* fmt.Printf("Move: %v\n", move)
-		fmt.Println("head: ", head)
-		fmt.Println("tail: ", tail)
-		fmt.Println("move nb: ", i) */
-		if i == 168 {
-			println("i: ", i)
-		}
-		switch move.Step {
-		case "R":
-			// Move right
-			rope, head, tail = moveRight(rope, head, tail, move.Quantity, &tailCount)
-		case "U":
-			// Move up
-			rope, head, tail = moveUp(rope, head, tail, move.Quantity, &tailCount)
-		case "L":
-			// Move left
-			rope, head, tail = moveLeft(rope, head, tail, move.Quantity, &tailCount)
-		case "D":
-			rope, head, tail = moveDown(rope, head, tail, move.Quantity, &tailCount)
-		}
-		if i == 0 {
-			rope[tail[0]][tail[1]] = "T"
-		}
-		// If tail is already in the map do not count it
-
-		if countTailPassed(rope) > nbTailPassed {
-			nbTailPassed = countTailPassed(rope)
-		}
-
-		if _, ok := tailsPassed[fmt.Sprintf("%v", tail)]; !ok {
-			tailsPassed[fmt.Sprintf("%v", tail)] = 1
-		}
-		//printInFile(rope)
-	}
-	println("tailCount: ", tailCount)
-	nbTailPassed = countTailPassed(rope)
-	fmt.Printf("head: %v\n", head)
-	fmt.Printf("tail: %v\n", tail)
-	fmt.Printf("Nb tail passed %v: ", nbTailPassed)
-
-	fmt.Printf("tails passed: %v\n", len(tailsPassed))
-	// 1988 too low
-	// 5041 too low
-	// 5165 too low
-	// 5174 not good
-	// 7324 not good
-}
-
-type Move struct {
-	Step     string
-	Quantity int
-}
-
-func printInFile(rope [][]string) {
+/* func printInFile(rope [][]string) {
 	file, err := os.Create("day9/ropeTest.txt")
 	if err != nil {
 		panic(err)
@@ -100,7 +101,7 @@ func printInFile(rope [][]string) {
 		}
 		fmt.Fprintf(file, "%s", "\n")
 	}
-}
+} */
 
 func fromListToMoves(list []string) []Move {
 	var moves []Move
@@ -112,7 +113,7 @@ func fromListToMoves(list []string) []Move {
 	return moves
 }
 
-func isTouchingHead(head, tail []int) bool {
+/* func isTouchingHead(head, tail []int) bool {
 	// Check for same position
 	if head[0] == tail[0] && head[1] == tail[1] {
 		return true
@@ -132,14 +133,11 @@ func isTouchingHead(head, tail []int) bool {
 	}
 
 	return false
-}
+} */
 
-func moveRight(rope [][]string, head, tail []int, nbMove int, count *int) ([][]string, []int, []int) {
+/* func moveRight(rope [][]string, head []int, knots map[string][]int, nbMove int, count *int) ([][]string, []int, []int) {
 	// indexes
 	rowHead := head[0]
-	rowTail := tail[0]
-
-	colTail := tail[1]
 	colHead := head[1]
 	// Move head to the right
 
@@ -164,9 +162,9 @@ func moveRight(rope [][]string, head, tail []int, nbMove int, count *int) ([][]s
 	}
 
 	return rope, head, tail
-}
+} */
 
-func moveUp(rope [][]string, head, tail []int, nbMove int, count *int) ([][]string, []int, []int) {
+/* func moveUp(rope [][]string, head, tail []int, nbMove int, count *int) ([][]string, []int, []int) {
 	// indexes
 	rowHead := head[0]
 	rowTail := tail[0]
@@ -200,9 +198,9 @@ func moveUp(rope [][]string, head, tail []int, nbMove int, count *int) ([][]stri
 	}
 
 	return rope, head, tail
-}
+} */
 
-func moveLeft(rope [][]string, head, tail []int, nbMove int, count *int) ([][]string, []int, []int) {
+/* func moveLeft(rope [][]string, head, tail []int, nbMove int, count *int) ([][]string, []int, []int) {
 	// indexes
 	rowHead := head[0]
 	rowTail := tail[0]
@@ -236,9 +234,9 @@ func moveLeft(rope [][]string, head, tail []int, nbMove int, count *int) ([][]st
 	}
 
 	return rope, head, tail
-}
+} */
 
-func moveDown(rope [][]string, head, tail []int, nbMove int, count *int) ([][]string, []int, []int) {
+/* func moveDown(rope [][]string, head, tail []int, nbMove int, count *int) ([][]string, []int, []int) {
 	// indexes
 	rowHead := head[0]
 	rowTail := tail[0]
@@ -271,9 +269,9 @@ func moveDown(rope [][]string, head, tail []int, nbMove int, count *int) ([][]st
 	}
 
 	return rope, head, tail
-}
+} */
 
-func countTailPassed(rope [][]string) int {
+/* func countTailPassed(rope [][]string) int {
 	pass := 0
 	t := 0
 	for _, row := range rope {
@@ -334,4 +332,4 @@ func calculateExtremes(moves []Move) (int, int, int, int) {
 	startPosY := maxDown
 
 	return gridHeight, gridWidth, startPosX, startPosY
-}
+} */
