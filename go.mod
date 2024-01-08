@@ -3,8 +3,8 @@ module main.go
 go 1.21.3
 
 require (
+	github.com/spf13/cast v1.6.0
 	github.com/stretchr/testify v1.8.4
-	golang.org/x/exp v0.0.0-20231206192017-f3f8817b8deb
 )
 
 require (

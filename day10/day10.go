@@ -1,9 +1,9 @@
 package day10
 
 import (
-	"strconv"
 	"strings"
 
+	"github.com/spf13/cast"
 	"main.go/util"
 )
 
@@ -14,37 +14,66 @@ import (
 // Multiply the result by the total nb of cycles we've done
 // Need to check only at 20th, 60th, 100th, 140th and 180th cycle
 
-func Day10() {
-	datas := util.ReadFile("day10/datas.txt")
-	cpuCycles := CPU{TotalCycle: 0, X: 0}
-	totalSum := 0
-	for _, data := range datas {
-		instructions := strings.Fields(string(data))
-		if instructions[0] == "noop" {
-			cpuCycles.TotalCycle++
-			continue
-		}
-		if instructions[0] == "addx" {
-			cpuCycles.TotalCycle++
-			if isCycleToMultiply(&cpuCycles) {
-				totalSum += cpuCycles.TotalCycle * cpuCycles.X
-			}
-			cpuCycles.TotalCycle++
-			x, _ := strconv.Atoi(instructions[1])
-			cpuCycles.AddX(x)
-		}
-	}
-}
-
 type CPU struct {
-	TotalCycle int
-	X          int
+	IndexInstruction int
+	X                int
 }
 
 func (c *CPU) AddX(nb int) {
 	c.X += nb
 }
 
-func isCycleToMultiply(c *CPU) bool {
-	return c.TotalCycle == 20 || c.TotalCycle == 60 || c.TotalCycle == 100 || c.TotalCycle == 140 || c.TotalCycle == 180
+func Day10() {
+	datas := util.ReadFile("day10/data.txt")
+	dataSplit := strings.Split(string(datas), "\n")
+	cpuCycles := CPU{IndexInstruction: 0, X: 1}
+	totalSum := 0
+	instructions := parseInput(dataSplit)
+
+	for cycle := 1; cycle <= 220; cycle++ {
+		if (cycle-20)%40 == 0 {
+			totalSum += cpuCycles.X * cycle
+		}
+		switch instructions[cpuCycles.IndexInstruction].name {
+		case "addx":
+			instructions[cpuCycles.IndexInstruction].cycles--
+			if instructions[cpuCycles.IndexInstruction].cycles == 0 {
+				cpuCycles.AddX(instructions[cpuCycles.IndexInstruction].val)
+				cpuCycles.IndexInstruction++
+			}
+		case "noop":
+			cpuCycles.IndexInstruction++
+		}
+	}
+
+	//part1(string(datas))
+	// 13520 Good one
+	println(totalSum)
+}
+
+type instruction struct {
+	name   string
+	val    int
+	cycles int
+}
+
+func parseInput(input []string) (ans []instruction) {
+	for _, l := range input {
+		switch strings.Split(l, " ")[0] {
+		case "addx":
+			ans = append(ans, instruction{
+				name:   "addx",
+				val:    cast.ToInt(l[1]),
+				cycles: 2,
+			})
+		case "noop":
+			ans = append(ans, instruction{
+				name:   "noop",
+				cycles: 1,
+			})
+		default:
+			panic("input line: " + l)
+		}
+	}
+	return ans
 }

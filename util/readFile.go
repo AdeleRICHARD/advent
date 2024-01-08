@@ -29,3 +29,7 @@ func ConvertStringsToInts(stringSlice []string) ([]int, error) {
 	}
 	return intSlice, nil
 }
+
+func ConvertBytesToStrings(bytes []byte) []string {
+	return []string{string(bytes)}
+}
