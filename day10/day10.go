@@ -19,21 +19,32 @@ type CPU struct {
 	X                int
 }
 
-func (c *CPU) AddX(nb int) {
-	c.X += nb
-}
-
 func Day10() {
+
+	/* Le sprite a une largeur de 3 pixels. Le registre X du CPU contrôle la position horizontale du centre de ce sprite. Par exemple, si X est 10, le centre du sprite est sur le 10ème pixel, donc le sprite couvrira les pixels 9, 10, et 11. */
 	datas := util.ReadFile("day10/data.txt")
 	dataSplit := strings.Split(string(datas), "\n")
 	cpuCycles := CPU{IndexInstruction: 0, X: 1}
 	totalSum := 0
 	instructions := parseInput(dataSplit)
-
+	positionPixel := 0
 	for cycle := 1; cycle <= 220; cycle++ {
-		if (cycle-20)%40 == 0 {
-			totalSum += cpuCycles.X * cycle
+		if cpuCycles.X-1 == positionPixel ||
+			cpuCycles.X == positionPixel ||
+			cpuCycles.X+1 == positionPixel {
+			print("#")
+			positionPixel++
+		} else {
+			print(".")
+			positionPixel++
+
 		}
+		if cycle%40 == 0 {
+			totalSum += cpuCycles.X * cycle
+			positionPixel = 0
+			println()
+		}
+
 		switch instructions[cpuCycles.IndexInstruction].name {
 		case "addx":
 			instructions[cpuCycles.IndexInstruction].cycles--
@@ -48,7 +59,14 @@ func Day10() {
 
 	//part1(string(datas))
 	// 13520 Good one
-	println(totalSum)
+	//println("Total : ", totalSum)
+	// PGPHRFAR Not good
+	// PGPHBFAB Not good
+	// PGPHBEAB Good
+}
+
+func (c *CPU) AddX(nb int) {
+	c.X += nb
 }
 
 type instruction struct {
@@ -59,11 +77,12 @@ type instruction struct {
 
 func parseInput(input []string) (ans []instruction) {
 	for _, l := range input {
-		switch strings.Split(l, " ")[0] {
+		lineSplit := strings.Split(l, " ")
+		switch lineSplit[0] {
 		case "addx":
 			ans = append(ans, instruction{
 				name:   "addx",
-				val:    cast.ToInt(l[1]),
+				val:    cast.ToInt(lineSplit[1]),
 				cycles: 2,
 			})
 		case "noop":
