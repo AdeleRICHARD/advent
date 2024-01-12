@@ -37,7 +37,6 @@ func Day10() {
 		} else {
 			print(".")
 			positionPixel++
-
 		}
 		if cycle%40 == 0 {
 			totalSum += cpuCycles.X * cycle
