@@ -61,26 +61,31 @@ function operation(operation, number1, number2){
 
 // Process each monkey action
 let count = 0;
+// On calcule le modulo de tous les singes
+// On va pour chaque singe multiplier la valeur du test précédent avec le test d'après
+// Ce qui te donne le max de multiplication possible 
+// donc on fait modulo dessus ensuite et ça ne dépassera jamais ce nombre
+var max = monkeys.reduce((val, monkey) => val * monkey.test, 1);
 console.log("before loop ", monkeys);
-while (count < 20){
+while (count < 10000){
     monkeys.forEach((monkey) => {
         while (monkey.startingItems.length !== 0){
             firstItem = monkey.startingItems.shift();
             monkey.timesInspected++;
-            // Worry lvl down
-            //console.log(firstItem);
-            // Operation
-            //let newItem = operation(monkey.operation[0], firstItem, monkey.operation[1]);
             let newItem = eval(`let old = ${firstItem}; ${monkey.operation};`);
-            newItem /= 3;
-            newItem = Math.floor(newItem);
-            // Test
+            //Part 1
+            //newItem /= 3;
+            //newItem = Math.floor(newItem);
+
+            // Part 2
+            
+            let itemModulo = newItem % max;
             if ( newItem % Number(monkey.test) == 0 ){
                 // True
-                monkeys[monkey.trueTest].startingItems.push(newItem);
+                monkeys[monkey.trueTest].startingItems.push(itemModulo);
             } else {
                 // False
-                monkeys[monkey.falseTest].startingItems.push(newItem);
+                monkeys[monkey.falseTest].startingItems.push(itemModulo);
             }
         };
     });
@@ -92,8 +97,4 @@ let maxInspections = monkeys.map(monkey => monkey.timesInspected).sort((a, b) =>
 let monkeyBusinessLevel = maxInspections[0] * maxInspections[1];
 console.log(monkeys);
 console.log(`Level of monkey business: ${monkeyBusinessLevel}`);
-// 12375 too low
-// 16256 too low
-// 81510
-// 108240 good
-
+// 32338289412 too high
