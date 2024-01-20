@@ -24,7 +24,7 @@ const monkeys = input.map((line) => {
     return{
         monkeyId : getNumberInString(action[0]),
         startingItems : getNumberInString(action[1]).map(Number),
-        operation : getOperation(action[2]),
+        operation : action[2].split("= ")[1],
         test : getNumberInString(action[3]),
         trueTest : getNumberInString(action[4]),
         falseTest : getNumberInString(action[5]),
@@ -66,14 +66,16 @@ while (count < 20){
     monkeys.forEach((monkey) => {
         while (monkey.startingItems.length !== 0){
             firstItem = monkey.startingItems.shift();
-            // Worry lvl down
             monkey.timesInspected++;
+            // Worry lvl down
             //console.log(firstItem);
             // Operation
-            let newItem = operation(monkey.operation[0], firstItem, monkey.operation[1]);
+            //let newItem = operation(monkey.operation[0], firstItem, monkey.operation[1]);
+            let newItem = eval(`let old = ${firstItem}; ${monkey.operation};`);
             newItem /= 3;
+            newItem = Math.floor(newItem);
             // Test
-            if ( newItem % monkey.test === 0 ){
+            if ( newItem % Number(monkey.test) == 0 ){
                 // True
                 monkeys[monkey.trueTest].startingItems.push(newItem);
             } else {
@@ -85,7 +87,13 @@ while (count < 20){
     count++;
     console.log(count);
 }
+// Logique finale pour déterminer les singes les plus actifs
+let maxInspections = monkeys.map(monkey => monkey.timesInspected).sort((a, b) => b - a);
+let monkeyBusinessLevel = maxInspections[0] * maxInspections[1];
 console.log(monkeys);
+console.log(`Level of monkey business: ${monkeyBusinessLevel}`);
 // 12375 too low
 // 16256 too low
+// 81510
+// 108240 good
 
