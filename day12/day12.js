@@ -47,8 +47,9 @@ function findPaths(start, end) {
 
   while (queue.length > 0) {
     const current = queue.shift();
+    // x , y
     const currentMove = current[0].split(',').map(el => parseInt(el));
-    const possibleMoves = getPossibleMoves(...currentMove).map(el => el.join(','))
+    const possibleMoves = getPossibleMoves(...currentMove).map(el => el.join(','));
 
     for (const move of possibleMoves) {
       if (move === end) {
